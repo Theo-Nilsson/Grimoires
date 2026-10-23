@@ -1,0 +1,5 @@
+{
+  "icon": "grimoires:gui/slots/grimoire",
+  "drop_rule": "keep",
+  "validator_predicates": ["trinkets:tag"]
+}

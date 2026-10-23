@@ -1,0 +1,20 @@
+{
+  "attribute.name.grimoires.max_mana": "Max Mana",
+
+  "item.grimoires.personal_grimoire": "Personal Grimoire",
+  "item.grimoires.scroll": "Spell Scroll",
+  "item.grimoires.staff": "Staff",
+
+  "screen.grimoires.scroll": "Learn this spell?",
+  "screen.grimoires.scroll.tooltip": "The spell will be written into your Personal Grimoire.",
+
+  "spell.grimoires.barrier": "Barrier",
+  "spell.grimoires.fire_zoltraak": "Beam of Fire",
+  "spell.grimoires.ice_zoltraak": "Beam of Ice",
+
+  "text.grimoires.learn_spell": "Do you want to learn the spell '%s'?",
+
+  "tooltip.grimoires.staff.spell": "The currently selected spell is '%s'.",
+
+  "trinkets.slot.offhand.grimoire": "Grimoire"
+}
