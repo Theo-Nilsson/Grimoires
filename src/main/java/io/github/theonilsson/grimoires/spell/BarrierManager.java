@@ -124,10 +124,8 @@ public class BarrierManager {
 
 			double dir = side >= 0 ? 1.0 : -1.0;
 			Vec3d push = b.normal.multiply(dir * 0.4);
-			e.addVelocity(push.x, 0.05, push.z);
-			e.velocityModified = true;
-
-			if (b.ctx.element() != null) b.ctx.element().onHitEntity(b.ctx, e, 5f);
+			SpellEffects.push(b.ctx, e, new Vec3d(push.x, 0.05, push.z));
+			SpellEffects.touch(b.ctx, e, 5f);
 			b.durability -= 0.5f;
 		}
 	}
@@ -165,5 +163,4 @@ public class BarrierManager {
 		world.spawnParticles(ParticleTypes.END_ROD, b.center.x, b.center.y, b.center.z, 40, b.radius * 0.5, b.radius * 0.5, b.radius * 0.5, 0.05);
 		world.playSound(null, new BlockPos(b.center), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1.0f, 0.8f);
 	}
-
 }

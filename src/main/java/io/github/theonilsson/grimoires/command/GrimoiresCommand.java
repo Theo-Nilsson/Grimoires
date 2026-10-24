@@ -26,7 +26,7 @@ import java.util.List;
 
 public class GrimoiresCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-		dispatcher.register(CommandManager.literal("grimoires")
+		dispatcher.register(CommandManager.literal("grimoires").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(2))
 			.then(CommandManager.literal("give")
 				.then(CommandManager.literal("staff")
 					.then(CommandManager.argument("shaft", IdentifierArgumentType.identifier())

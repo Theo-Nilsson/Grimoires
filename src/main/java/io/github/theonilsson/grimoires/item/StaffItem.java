@@ -9,6 +9,7 @@ import io.github.theonilsson.grimoires.init.GrimoiresSpells;
 import io.github.theonilsson.grimoires.init.GrimoiresStaffParts;
 import io.github.theonilsson.grimoires.item.head.StaffHead;
 import io.github.theonilsson.grimoires.item.ornament.StaffOrnament;
+import io.github.theonilsson.grimoires.item.relics.MajaciteCrownItem;
 import io.github.theonilsson.grimoires.item.shaft.StaffShaft;
 import io.github.theonilsson.grimoires.spell.SpellCaster;
 import io.github.theonilsson.grimoires.spell.SpellInstance;
@@ -16,6 +17,7 @@ import io.github.theonilsson.grimoires.spell.StaffStats;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -72,7 +74,7 @@ public class StaffItem extends Item {
 		StaffStats stats = StaffStats.of(spell, (StaffShaft) shaftOpt.orElse(null), (StaffHead) headOpt.orElse(null), (StaffOrnament) ornamentOpt.orElse(null));
 		int charged = getMaxUseTime(stack) - remainingUseTicks;
 
-		if (charged >= SpellCaster.castTicks(spell, stats)) {
+		if (charged >= SpellCaster.castTicks(player, spell, stats)) {
 			SpellCaster.tryCast(player, spell, stats);
 		}
 	}
@@ -80,6 +82,11 @@ public class StaffItem extends Item {
 	@Override
 	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
 		if (!(user instanceof ServerPlayerEntity player)) return;
+
+		if (MajaciteCrownItem.hasMajaciteCrownEquipped(player)) {
+			player.sendMessage(Text.translatable("cast.grimoires.error_majacite"), true);
+			return;
+		}
 
 		Optional<StaffPart> shaftOpt = GrimoiresStaffParts.get(getPart(stack, "shaft"));
 		Optional<StaffPart> headOpt = GrimoiresStaffParts.get(getPart(stack, "head"));
@@ -89,10 +96,10 @@ public class StaffItem extends Item {
 		if (spell == null) return;
 		StaffStats stats = StaffStats.of(spell, (StaffShaft) shaftOpt.orElse(null), (StaffHead) headOpt.orElse(null), (StaffOrnament) ornamentOpt.orElse(null));
 		int charged = getMaxUseTime(stack) - remainingUseTicks;
-		int required = Math.max(1, SpellCaster.castTicks(spell, stats));
+		int required = Math.max(1, SpellCaster.castTicks(player, spell, stats));
 		int pct = Math.min(100, Math.round(charged * 100f / required));
 
-		player.sendMessage(Text.literal("Casting: " + pct + "%"), true);
+		player.sendMessage(Text.translatable("cast.grimoires.progress", pct), true);
 	}
 
 	public static void ensureId(ItemStack stack) {
@@ -173,5 +180,17 @@ public class StaffItem extends Item {
 			}
 		}
 		return null;
+	}
+
+	public static float applyStaffOrnament(PlayerEntity player, DamageSource source, float amount) {
+		ItemStack staff = player.getMainHandStack();
+		if (!staff.isOf(GrimoiresItems.STAFF_ITEM)) return amount;
+
+		Optional<StaffPart> part = GrimoiresStaffParts.get(StaffItem.getPart(staff, "ornament"));
+		if (part.isPresent() && part.get() instanceof StaffOrnament ornament) {
+			return ornament.onIncomingDamage(player, source, amount, staff);
+		}
+
+		return amount;
 	}
 }

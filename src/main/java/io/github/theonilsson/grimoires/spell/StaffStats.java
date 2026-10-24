@@ -1,13 +1,14 @@
 package io.github.theonilsson.grimoires.spell;
 
+import io.github.theonilsson.grimoires.item.HasMagicGrade;
 import io.github.theonilsson.grimoires.item.head.StaffHead;
 import io.github.theonilsson.grimoires.item.ornament.StaffOrnament;
 import io.github.theonilsson.grimoires.item.shaft.StaffShaft;
 
-public record StaffStats(float manaEfficiency, float castSpeed, float spellPower, ParamModifier modifier) {
+public record StaffStats(float manaEfficiency, float castSpeed, float spellPower, HasMagicGrade.Grade rarity, ParamModifier modifier) {
 
-    public StaffStats(float manaEfficiency, float castSpeed, float spellPower) {
-        this(manaEfficiency, castSpeed, spellPower, (archetype, param, value) -> value);
+    public StaffStats(float manaEfficiency, float castSpeed, float spellPower, HasMagicGrade.Grade rarity) {
+        this(manaEfficiency, castSpeed, spellPower, rarity, (archetype, param, value) -> value);
     }
 
     public static StaffStats of(SpellInstance spell, StaffShaft s, StaffHead h, StaffOrnament o) {
@@ -50,11 +51,22 @@ public record StaffStats(float manaEfficiency, float castSpeed, float spellPower
         if (archetypeAffinity != 0f) speed *= 1f / archetypeAffinity;
         if (elementAffinity !=  0f) speed *= 1f / elementAffinity;
 
+		HasMagicGrade.Grade grade = HasMagicGrade.Grade.HEARTHWORN;
+		if (s != null) {
+			grade = s.getMagicGrade().getRank() < grade.getRank() ? s.getMagicGrade() : grade;
+		}
+		if (h != null) {
+			grade = h.getMagicGrade().getRank() < grade.getRank() ? h.getMagicGrade() : grade;
+		}
+		if (o != null) {
+			grade = o.getMagicGrade().getRank() < grade.getRank() ? o.getMagicGrade() : grade;
+		}
+
         ParamModifier mod = (h != null)
                 ? h::modifyParam
                 : (archetype, param, value) -> value;
 
-        return new StaffStats(cost, speed, power, mod);
+        return new StaffStats(cost, speed, power, grade, mod);
     }
 
     public float modifyParam(SpellArchetype archetype, SpellParam param, float value) {

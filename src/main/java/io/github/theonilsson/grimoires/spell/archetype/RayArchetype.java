@@ -69,11 +69,7 @@ public class RayArchetype extends SpellArchetype {
 			if (hits >= maxHits) break;
 			Optional<Vec3d> hit = e.getBoundingBox().expand(width).raycast(start, stop);
 			if (hit.isEmpty()) continue;
-			DamageSource src = ctx.element() != null ? ctx.element().damageSource(ctx) : DamageSource.magic(caster, caster);
-			e.damage(src, damage);
-			if (ctx.element() != null && e instanceof LivingEntity living) {
-				ctx.element().onHitEntity(ctx, living, damage);
-			}
+			SpellEffects.damage(ctx, (LivingEntity) e, damage);
 			hits++;
 		}
 

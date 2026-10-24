@@ -8,6 +8,7 @@ import io.github.theonilsson.grimoires.init.GrimoiresStaffParts;
 import io.github.theonilsson.grimoires.item.StaffItem;
 import io.github.theonilsson.grimoires.item.StaffPart;
 import io.github.theonilsson.grimoires.item.ornament.StaffOrnament;
+import io.github.theonilsson.grimoires.item.relics.MajaciteCrownItem;
 import io.github.theonilsson.grimoires.item.shaft.StaffShaft;
 import io.github.theonilsson.grimoires.networking.LearnSpellC2SPacket;
 import io.github.theonilsson.grimoires.spell.BarrierManager;
@@ -41,6 +42,8 @@ public class Grimoires implements ModInitializer {
 
 	private static final ThreadLocal<Boolean> DAMAGING = ThreadLocal.withInitial(() -> false);
 
+	private static boolean FIX_SHOULD_SPEND_MANA = true; // remove this later
+
 	@Override
 	public void onInitialize(ModContainer mod) {
 		LOGGER.info("Hello Quilt world from {}!", mod.metadata().name());
@@ -60,7 +63,7 @@ public class Grimoires implements ModInitializer {
 				return true;
 			}
 
-			float modified = applyStaffOrnament(player, source, amount);
+			float modified = StaffItem.applyStaffOrnament(player, source, amount);
 
 			if (modified != amount) {
 				DAMAGING.set(true);
@@ -77,7 +80,9 @@ public class Grimoires implements ModInitializer {
 		ServerTickEvents.START.register((server) -> {
 			server.getPlayerManager().getPlayerList().forEach(player -> {
 				MagicComponent magic = MagicComponent.MAGIC.get(player);
+				if (MajaciteCrownItem.hasMajaciteCrownEquipped(player)) magic.growMaxManaFromMajacite();
 				ItemStack stack = player.getMainHandStack();
+				if (FIX_SHOULD_SPEND_MANA && !magic.shouldSpendMana()) magic.setShouldSpendMana(true);
 				float magicRegenMult = 1.0f;
 				if (stack.isOf(GrimoiresItems.STAFF_ITEM)) {
 					Optional<StaffPart> partOpt = GrimoiresStaffParts.get(StaffItem.getPart(stack, "shaft"));
@@ -91,18 +96,6 @@ public class Grimoires implements ModInitializer {
 		});
 
 		LearnSpellC2SPacket.register();
-	}
-
-	private static float applyStaffOrnament(PlayerEntity player, DamageSource source, float amount) {
-		ItemStack staff = player.getMainHandStack();
-		if (!staff.isOf(GrimoiresItems.STAFF_ITEM)) return amount;
-
-		Optional<StaffPart> part = GrimoiresStaffParts.get(StaffItem.getPart(staff, "ornament"));
-		if (part.isPresent() && part.get() instanceof StaffOrnament ornament) {
-			return ornament.onIncomingDamage(player, source, amount, staff);
-		}
-
-		return amount;
 	}
 
 	public static Identifier id(String path) {
