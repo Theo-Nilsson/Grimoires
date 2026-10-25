@@ -3,9 +3,7 @@ package io.github.theonilsson.grimoires.item;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
-import io.github.theonilsson.grimoires.Grimoires;
 import io.github.theonilsson.grimoires.init.GrimoiresItems;
-import io.github.theonilsson.grimoires.init.GrimoiresSpells;
 import io.github.theonilsson.grimoires.init.GrimoiresStaffParts;
 import io.github.theonilsson.grimoires.item.head.StaffHead;
 import io.github.theonilsson.grimoires.item.ornament.StaffOrnament;
@@ -155,7 +153,7 @@ public class StaffItem extends Item {
 
 	public static int getSelectedSpellIndex(ItemStack stack) {
 		NbtCompound nbt = stack.getOrCreateNbt();
-		return nbt.contains(SPELL_INDEX_KEY) ? nbt.getInt(SPELL_INDEX_KEY) : -1;
+		return nbt.contains(SPELL_INDEX_KEY) ? nbt.getInt(SPELL_INDEX_KEY) : 0;
 	}
 
 	public static void setSelectedSpellIndex(ItemStack stack, int spellIndex) {

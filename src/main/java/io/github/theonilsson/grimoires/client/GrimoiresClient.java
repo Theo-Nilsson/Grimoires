@@ -23,6 +23,8 @@ public class GrimoiresClient implements ClientModInitializer {
 
 		SpellHud.init();
 
+		KeyBindingManager.init();
+
 		OpenScreenS2CPacket.register();
 	}
 }

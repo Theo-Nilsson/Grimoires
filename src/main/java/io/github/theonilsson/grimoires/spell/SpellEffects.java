@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 /**
  * THE one place where a spell is allowed to affect an entity.
  * Archetypes must never call target.damage(), setOnFire(), addVelocity() etc. directly:
- * go through here so protections (Majacite, future resistances) apply everywhere.
+ * go through here so protections (i.e. Majacite) apply everywhere.
  */
 public final class SpellEffects {
 

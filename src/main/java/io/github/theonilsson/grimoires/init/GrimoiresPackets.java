@@ -7,4 +7,5 @@ public class GrimoiresPackets {
 
 	public static final Identifier OPEN_SCREEN_ID = Grimoires.id("open_screen");
 	public static final Identifier LEARN_SPELL_ID = Grimoires.id("learn_spell");
+	public static final Identifier CYCLE_SPELL_ID = Grimoires.id("cycle_spell");
 }

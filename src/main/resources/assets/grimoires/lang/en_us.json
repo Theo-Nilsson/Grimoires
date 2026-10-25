@@ -1,7 +1,10 @@
 {
   "attribute.name.grimoires.max_mana": "Max Mana",
 
+  "block.grimoires.void": "Void Block",
+
   "cast.grimoires.error_majacite": "You can't cast a spell while wearing a Majacite Crown.",
+  "cast.grimoires.error_mana": "Cast failed due to lack of mana.",
   "cast.grimoires.progress": "Casting: %s%%",
 
   "item.grimoires.majacite_crown": "Majacite Crown",
@@ -13,6 +16,7 @@
   "screen.grimoires.scroll.tooltip": "The spell will be written into your Personal Grimoire.",
 
   "spell.grimoires.barrier": "Barrier",
+  "spell.grimoires.door_to_nothingness": "Door to Nothingness",
   "spell.grimoires.fire_zoltraak": "Beam of Fire",
   "spell.grimoires.ice_zoltraak": "Beam of Ice",
 

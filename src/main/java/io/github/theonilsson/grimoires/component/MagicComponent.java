@@ -8,6 +8,8 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.UUID;
 
@@ -94,7 +96,10 @@ public class MagicComponent implements AutoSyncedComponent {
 
 	public boolean tryConsume(float amount) {
 		if (!shouldSpendMana()) return true;
-		if (amount > getMana()) return false;
+		if (amount > getMana()) {
+			player.sendMessage(Text.translatable("cast.grimoires.error_mana").formatted(Formatting.RED), true);
+			return false;
+		}
 		setMana(getMana() - amount);
 		return true;
 	}

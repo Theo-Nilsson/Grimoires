@@ -39,7 +39,8 @@ public class GrimoiresCommand {
 					.then(CommandManager.literal("zoltraak").executes((context) -> createScroll(context, GrimoiresSpells.ZOLTRAAK)))
 					.then(CommandManager.literal("fire_beam").executes((context) -> createScroll(context, GrimoiresSpells.FIRE_RAY)))
 					.then(CommandManager.literal("ice_beam").executes((context) -> createScroll(context, GrimoiresSpells.ICE_RAY)))
-					.then(CommandManager.literal("barrier").executes(context ->  createScroll(context, GrimoiresSpells.BARRIER)))))
+					.then(CommandManager.literal("barrier").executes(context -> createScroll(context, GrimoiresSpells.BARRIER)))
+					.then(CommandManager.literal("door_to_nothingness").executes(context -> createScroll(context, GrimoiresSpells.DOOR_TO_NOTHINGNESS)))))
 			.then(CommandManager.literal("mana")
 				.then(CommandManager.literal("get").executes(GrimoiresCommand::getMana).then(CommandManager.literal("max").executes(GrimoiresCommand::getMaxMana)))
 				.then(CommandManager.literal("set").then(CommandManager.argument("mana", IntegerArgumentType.integer())
@@ -48,17 +49,15 @@ public class GrimoiresCommand {
 				.then(CommandManager.literal("set").then(CommandManager.argument("idx", IntegerArgumentType.integer()).executes(GrimoiresCommand::setSelectedSpell))))
 			.then(CommandManager.literal("spells").executes(context -> {
 				PlayerEntity player = context.getSource().getPlayer();
-				TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
-					trinketComponent.getEquipped(stack -> stack.isOf(GrimoiresItems.PERSONAL_GRIMOIRE_ITEM)).forEach(pair -> {
-						ItemStack itemStack = pair.getRight();
-						List<SpellInstance> list = PersonalGrimoireItem.getSpells(itemStack);
-						MutableText spells = Text.literal("");
-						list.forEach(spellInstance -> {
-							spells.append(Text.literal("\n").append(spellInstance.getName()));
-						});
-						player.sendMessage(spells, false);
+				TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> trinketComponent.getEquipped(stack -> stack.isOf(GrimoiresItems.PERSONAL_GRIMOIRE_ITEM)).forEach(pair -> {
+					ItemStack itemStack = pair.getRight();
+					List<SpellInstance> list = PersonalGrimoireItem.getSpells(itemStack);
+					MutableText spells = Text.literal("");
+					list.forEach(spellInstance -> {
+						spells.append(Text.literal("\n").append(spellInstance.getName()));
 					});
-				});
+					player.sendMessage(spells, false);
+				}));
 				return 0;
 			})));
 	}
