@@ -47,7 +47,7 @@ public final class SpellCaster {
 
 		if (!player.isCreative()) {
 			MagicComponent magic = MagicComponent.MAGIC.get(player);
-			if (!magic.tryConsume(manaCost(player, s, staff))) return false;
+			if (!magic.tryConsume(manaCost(player, s, staff), true)) return false;
 		}
 		MagicComponent.MAGIC.sync(player);
 

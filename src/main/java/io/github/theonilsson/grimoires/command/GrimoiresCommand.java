@@ -40,7 +40,8 @@ public class GrimoiresCommand {
 					.then(CommandManager.literal("fire_beam").executes((context) -> createScroll(context, GrimoiresSpells.FIRE_RAY)))
 					.then(CommandManager.literal("ice_beam").executes((context) -> createScroll(context, GrimoiresSpells.ICE_RAY)))
 					.then(CommandManager.literal("barrier").executes(context -> createScroll(context, GrimoiresSpells.BARRIER)))
-					.then(CommandManager.literal("door_to_nothingness").executes(context -> createScroll(context, GrimoiresSpells.DOOR_TO_NOTHINGNESS)))))
+					.then(CommandManager.literal("door_to_nothingness").executes(context -> createScroll(context, GrimoiresSpells.DOOR_TO_NOTHINGNESS)))
+					.then(CommandManager.literal("return_from_nothingness").executes(context -> createScroll(context, GrimoiresSpells.RETURN_FROM_NOTHINGNESS)))))
 			.then(CommandManager.literal("mana")
 				.then(CommandManager.literal("get").executes(GrimoiresCommand::getMana).then(CommandManager.literal("max").executes(GrimoiresCommand::getMaxMana)))
 				.then(CommandManager.literal("set").then(CommandManager.argument("mana", IntegerArgumentType.integer())
@@ -53,9 +54,7 @@ public class GrimoiresCommand {
 					ItemStack itemStack = pair.getRight();
 					List<SpellInstance> list = PersonalGrimoireItem.getSpells(itemStack);
 					MutableText spells = Text.literal("");
-					list.forEach(spellInstance -> {
-						spells.append(Text.literal("\n").append(spellInstance.getName()));
-					});
+					list.forEach(spellInstance -> spells.append(Text.literal("\n").append(spellInstance.getName())));
 					player.sendMessage(spells, false);
 				}));
 				return 0;

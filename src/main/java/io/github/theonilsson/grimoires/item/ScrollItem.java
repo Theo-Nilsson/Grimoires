@@ -2,16 +2,23 @@ package io.github.theonilsson.grimoires.item;
 
 import io.github.theonilsson.grimoires.init.GrimoiresPackets;
 import io.github.theonilsson.grimoires.spell.SpellInstance;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+
+import java.util.List;
 
 public class ScrollItem extends Item {
 
@@ -32,5 +39,19 @@ public class ScrollItem extends Item {
 
 	public static void addSpell(ItemStack stack, SpellInstance instance) {
 		stack.getOrCreateNbt().put(SPELL_KEY, instance.toNbt());
+	}
+
+	public static SpellInstance getSpell(ItemStack stack) {
+		return SpellInstance.fromNbt(stack.getOrCreateNbt().getCompound(SPELL_KEY));
+	}
+
+	@Override
+	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+		super.appendTooltip(stack, world, tooltip, context);
+		SpellInstance spell = getSpell(stack);
+		tooltip.add(((MutableText) spell.getName()).formatted(Formatting.GRAY));
+		if (Text.Serializer.toJson(spell.getName()).contains("door_to_nothingness")) {
+			tooltip.add(Text.translatable("item.grimoires.scroll.ref").formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
+		}
 	}
 }

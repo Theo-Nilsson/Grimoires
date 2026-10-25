@@ -25,6 +25,7 @@ repositories {
 		name = "Sleeping Town"
 		url = "https://repo.sleeping.town/"
 	}
+	maven { url = 'https://maven.nucleoid.xyz/' }
 }
 
 // All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"
@@ -54,6 +55,8 @@ dependencies {
 	modImplementation libs.cca.entities
 
 	modImplementation libs.trinkets
+
+	modImplementation libs.fantasy
 }
 
 processResources {

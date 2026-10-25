@@ -94,13 +94,17 @@ public class MagicComponent implements AutoSyncedComponent {
 		this.shouldSpendMana = shouldSpendMana;
 	}
 
-	public boolean tryConsume(float amount) {
+	public boolean tryConsume(float amount, boolean cast) {
 		if (!shouldSpendMana()) return true;
 		if (amount > getMana()) {
-			player.sendMessage(Text.translatable("cast.grimoires.error_mana").formatted(Formatting.RED), true);
+			if (cast) player.sendMessage(Text.translatable("cast.grimoires.error_mana").formatted(Formatting.RED), true);
 			return false;
 		}
 		setMana(getMana() - amount);
 		return true;
+	}
+
+	public boolean tryConsume(float amount) {
+		return tryConsume(amount, false);
 	}
 }

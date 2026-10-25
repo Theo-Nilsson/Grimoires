@@ -10,6 +10,7 @@
   "item.grimoires.majacite_crown": "Majacite Crown",
   "item.grimoires.personal_grimoire": "Personal Grimoire",
   "item.grimoires.scroll": "Spell Scroll",
+  "item.grimoires.scroll.ref": "Is this a reference?",
   "item.grimoires.staff": "Staff",
 
   "screen.grimoires.scroll": "Learn this spell?",
@@ -19,6 +20,7 @@
   "spell.grimoires.door_to_nothingness": "Door to Nothingness",
   "spell.grimoires.fire_zoltraak": "Beam of Fire",
   "spell.grimoires.ice_zoltraak": "Beam of Ice",
+  "spell.grimoires.return_from_nothingness": "Return from Nothingness",
 
   "text.grimoires.learn_spell": "Do you want to learn the spell '%s'?",
 

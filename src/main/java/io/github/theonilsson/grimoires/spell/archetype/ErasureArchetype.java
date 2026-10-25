@@ -15,8 +15,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.TeleportTarget;
 import org.quiltmc.qsl.worldgen.dimension.api.QuiltDimensions;
@@ -67,7 +65,7 @@ public class ErasureArchetype extends SpellArchetype {
 		candidates.stream().findFirst().ifPresent(entity -> {
 			if (!(entity instanceof LivingEntity living)) return;
 			if (!SpellEffects.canAffect(ctx, living)) return;
-			ServerWorld voidWorld = world.getServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, Grimoires.id("void")));
+			ServerWorld voidWorld = world.getServer().getWorld(Grimoires.VOID_DIMENSION);
 			if (voidWorld == null) {
 				Grimoires.LOGGER.error("Cannot erase entity: the void dimension is not loaded");
 				return;
@@ -78,7 +76,8 @@ public class ErasureArchetype extends SpellArchetype {
 			world.spawnParticles(new DustParticleEffect(colorVec, 1.0f),
 				entity.getX(), entity.getY() + entity.getHeight() / 2.0, entity.getZ(),
 				30, 0.5, entity.getHeight() / 2.0, 0.5, 0.02);
-			QuiltDimensions.teleport(entity, voidWorld, new TeleportTarget(new Vec3d(entity.getX(), -61, entity.getZ()), entity.getVelocity(), entity.getYaw(), entity.getPitch()));
+			voidWorld.setChunkForced(0, 0, true);
+			QuiltDimensions.teleport(entity, voidWorld, new TeleportTarget(new Vec3d(0.5, -61, 0.5), entity.getVelocity(), entity.getYaw(), entity.getPitch()));
 		});
 	}
 }

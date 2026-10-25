@@ -9,6 +9,7 @@ quilted_fabric_api = "4.0.0-beta.26+0.72.0-1.19.2"
 geckolib = "3.1.40"
 cca = "5.0.2"
 trinkets = "3.4.1"
+fantasy = "0.4.7+1.19.2"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -24,6 +25,8 @@ cca_base = { module = "dev.onyxstudios.cardinal-components-api:cardinal-componen
 cca_entities = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-entity", version.ref = "cca" }
 
 trinkets = { module = "dev.emi:trinkets", version.ref = "trinkets" }
+
+fantasy = { module = "xyz.nucleoid:fantasy", version.ref = "fantasy" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
