@@ -12,6 +12,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class ScrollScreen extends Screen {
 
 	private final SpellInstance spell;
+	private final Hand hand;
 	private ButtonWidget learnButton;
 
-	public ScrollScreen(SpellInstance spell) {
+	public ScrollScreen(SpellInstance spell, Hand hand) {
 		super(Text.translatable("screen.grimoires.scroll"));
+		this.hand = hand;
 		this.spell = spell;
 	}
 
@@ -42,13 +45,12 @@ public class ScrollScreen extends Screen {
 			Text.literal("Learn"),
 			button -> {
 				PacketByteBuf buf = PacketByteBufs.create();
+				buf.writeEnumConstant(hand);
 				buf.writeNbt(spell.toNbt());
 				ClientPlayNetworking.send(GrimoiresPackets.LEARN_SPELL_ID, buf);
 				MinecraftClient.getInstance().setScreen(null);
 			},
-			((buttonWidget, matrices, i, j) -> {
-				this.renderTooltip(matrices, Text.translatable("screen.grimoires.scroll.tooltip"), i, j);
-			})
+			((buttonWidget, matrices, i, j) -> this.renderTooltip(matrices, Text.translatable("screen.grimoires.scroll.tooltip"), i, j))
 		);
 
 
@@ -60,9 +62,7 @@ public class ScrollScreen extends Screen {
 				100,
 				20,
 				Text.literal("Cancel"),
-				button -> {
-					MinecraftClient.getInstance().setScreen(null);
-				}
+				button -> MinecraftClient.getInstance().setScreen(null)
 			)
 		);
 

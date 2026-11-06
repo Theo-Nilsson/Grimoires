@@ -5,6 +5,7 @@ import io.github.theonilsson.grimoires.client.screen.ScrollScreen;
 import io.github.theonilsson.grimoires.init.GrimoiresPackets;
 import io.github.theonilsson.grimoires.spell.SpellInstance;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Hand;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class OpenScreenS2CPacket {
@@ -12,10 +13,11 @@ public class OpenScreenS2CPacket {
 	public static void register() {
 		Grimoires.LOGGER.info("Registering Open Screen receiver");
 		ClientPlayNetworking.registerGlobalReceiver(GrimoiresPackets.OPEN_SCREEN_ID, (client, clientPlayNetworkHandler, buf, sender) -> {
+			Hand hand = buf.readEnumConstant(Hand.class);
 			NbtCompound nbt = buf.readNbt();
 			if (nbt == null) return;
 			client.execute(() -> {
-				client.setScreen(new ScrollScreen(SpellInstance.fromNbt(nbt)));
+				client.setScreen(new ScrollScreen(SpellInstance.fromNbt(nbt), hand));
 			});
 		});
 	}

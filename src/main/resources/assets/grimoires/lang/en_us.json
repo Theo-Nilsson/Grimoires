@@ -1,4 +1,5 @@
 {
+  "attribute.name.grimoires.casting_speed": "Casting Speed",
   "attribute.name.grimoires.max_mana": "Max Mana",
 
   "block.grimoires.void": "Void Block",
@@ -7,11 +8,15 @@
   "cast.grimoires.error_mana": "Cast failed due to lack of mana.",
   "cast.grimoires.progress": "Casting: %s%%",
 
+  "effect.grimoires.hastening": "Hastening",
+
   "item.grimoires.majacite_crown": "Majacite Crown",
   "item.grimoires.personal_grimoire": "Personal Grimoire",
   "item.grimoires.scroll": "Spell Scroll",
   "item.grimoires.scroll.ref": "Is this a reference?",
   "item.grimoires.staff": "Staff",
+
+  "itemGroup.grimoires.dungeon_blocks": "Dungeon Blocks",
 
   "screen.grimoires.scroll": "Learn this spell?",
   "screen.grimoires.scroll.tooltip": "The spell will be written into your Personal Grimoire.",

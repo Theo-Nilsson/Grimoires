@@ -21,6 +21,7 @@
 		"entrypoints": {
 			"init": "io.github.theonilsson.grimoires.Grimoires",
 			"client_init": "io.github.theonilsson.grimoires.client.GrimoiresClient",
+			"fabric-datagen": "io.github.theonilsson.grimoires.datagen.GrimoiresDatagen",
 			"cardinal-components": "io.github.theonilsson.grimoires.init.GrimoiresComponents"
 		},
 		"depends": [

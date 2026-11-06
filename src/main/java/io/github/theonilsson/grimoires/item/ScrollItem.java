@@ -32,6 +32,7 @@ public class ScrollItem extends Item {
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
 		if (world.isClient()) return super.use(world, user, hand);
 		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeEnumConstant(hand);
 		buf.writeNbt(user.getStackInHand(hand).getOrCreateNbt().getCompound(SPELL_KEY));
 		ServerPlayNetworking.send((ServerPlayerEntity) user, GrimoiresPackets.OPEN_SCREEN_ID, buf);
 		return super.use(world, user, hand);

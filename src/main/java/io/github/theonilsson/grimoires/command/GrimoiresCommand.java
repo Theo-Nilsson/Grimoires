@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.emi.trinkets.api.TrinketsApi;
 import io.github.theonilsson.grimoires.component.MagicComponent;
+import io.github.theonilsson.grimoires.dungeon.DungeonManager;
 import io.github.theonilsson.grimoires.init.GrimoiresItems;
 import io.github.theonilsson.grimoires.init.GrimoiresSpells;
 import io.github.theonilsson.grimoires.item.PersonalGrimoireItem;
@@ -17,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -58,7 +60,19 @@ public class GrimoiresCommand {
 					player.sendMessage(spells, false);
 				}));
 				return 0;
-			})));
+			}))
+			.then(CommandManager.literal("dungeon").executes(context -> {
+				ServerPlayerEntity player = context.getSource().getPlayer();
+				if (player == null) {
+					return 1;
+				}
+				DungeonManager.newDungeon(player);
+				return 0;
+			}).then(CommandManager.literal("clear").executes(context -> {
+				DungeonManager.clear();
+				DungeonManager.removeAll(context.getSource().getServer());
+				return 0;
+			}))));
 	}
 
 	private static Identifier getOptional(CommandContext<ServerCommandSource> ctx, String name) {

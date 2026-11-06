@@ -14,5 +14,6 @@ public abstract class PlayerEntityMixin {
 	@Inject(method = "createPlayerAttributes", at = @At("RETURN"))
 	private static void grimoires$createPlayerAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
 		cir.getReturnValue().add(Grimoires.MAX_MANA);
+		cir.getReturnValue().add(Grimoires.CASTING_SPEED);
 	}
 }

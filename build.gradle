@@ -59,6 +59,14 @@ dependencies {
 	modImplementation libs.fantasy
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDir "src/main/generated"
+		}
+	}
+}
+
 processResources {
 	inputs.property 'version', version
 
@@ -85,6 +93,19 @@ java {
 	// If this mod is going to be a library, then it should also generate Javadocs in order to aid with development.
 	// Uncomment this line to generate them.
 	// withJavadocJar()
+}
+
+loom {
+	runs {
+		datagen {
+			server()
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.modid=grimoires"
+			runDir "build/datagen"
+		}
+	}
 }
 
 // If you plan to use a different file for the license, don't forget to change the file name here!

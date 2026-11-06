@@ -9,9 +9,15 @@ import io.github.theonilsson.grimoires.item.ornament.MetalRingItem;
 import io.github.theonilsson.grimoires.item.relics.MajaciteCrownItem;
 import io.github.theonilsson.grimoires.item.shaft.WoodenShaft;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.registry.Registry;
+import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 
 public class GrimoiresItems {
+
+	public static final ItemGroup DUNGEON_BLOCKS = QuiltItemGroup.builder(Grimoires.id("dungeon_blocks"))
+		.icon(() -> GrimoiresBlocks.MIMIC_STONE_BRICKS.asItem().getDefaultStack())
+		.build();
 
 	public static final Item STAFF_ITEM;
 	public static final Item PERSONAL_GRIMOIRE_ITEM;

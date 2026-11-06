@@ -2,10 +2,11 @@ package io.github.theonilsson.grimoires;
 
 import io.github.theonilsson.grimoires.command.GrimoiresCommand;
 import io.github.theonilsson.grimoires.component.MagicComponent;
-import io.github.theonilsson.grimoires.init.GrimoiresBlocks;
-import io.github.theonilsson.grimoires.init.GrimoiresItems;
-import io.github.theonilsson.grimoires.init.GrimoiresSpells;
-import io.github.theonilsson.grimoires.init.GrimoiresStaffParts;
+import io.github.theonilsson.grimoires.dungeon.DungeonManager;
+import io.github.theonilsson.grimoires.dungeon.DungeonRoomRegistry;
+import io.github.theonilsson.grimoires.dungeon.room.catacomb.CatacombCombatRoom;
+import io.github.theonilsson.grimoires.dungeon.room.catacomb.CatacombStartingRoom;
+import io.github.theonilsson.grimoires.init.*;
 import io.github.theonilsson.grimoires.item.StaffItem;
 import io.github.theonilsson.grimoires.item.StaffPart;
 import io.github.theonilsson.grimoires.item.relics.MajaciteCrownItem;
@@ -15,6 +16,7 @@ import io.github.theonilsson.grimoires.networking.LearnSpellC2SPacket;
 import io.github.theonilsson.grimoires.spell.BarrierManager;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.entity.attribute.ClampedEntityAttribute;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,6 +31,7 @@ import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.quiltmc.qsl.command.api.CommandRegistrationCallback;
 import org.quiltmc.qsl.lifecycle.api.event.ServerTickEvents;
+import org.quiltmc.qsl.lifecycle.api.event.ServerWorldTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib3.GeckoLib;
@@ -44,12 +47,14 @@ public class Grimoires implements ModInitializer {
 		Grimoires.id("max_mana"),
 		new ClampedEntityAttribute("attribute.name.grimoires.max_mana", 80.0, 0.0, 10000.0)
 			.setTracked(true));
+	public static final EntityAttribute CASTING_SPEED = Registry.register(Registry.ATTRIBUTE,
+		Grimoires.id("casting_speed"),
+		new ClampedEntityAttribute("attribute.name.grimoires.casting_speed", 1.0, 0.0, 100.0)
+			.setTracked(true));
 
 	public static final RegistryKey<World> VOID_DIMENSION = RegistryKey.of(Registry.WORLD_KEY, id("void"));
 
 	private static final ThreadLocal<Boolean> DAMAGING = ThreadLocal.withInitial(() -> false);
-
-	private static boolean FIX_SHOULD_SPEND_MANA = true; // remove this later
 
 	@Override
 	public void onInitialize(ModContainer mod) {
@@ -59,13 +64,20 @@ public class Grimoires implements ModInitializer {
 		GrimoiresItems.init();
 		GrimoiresBlocks.init();
 		GrimoiresSpells.init();
+		GrimoiresStatusEffects.init();
 		GrimoiresStaffParts.init();
 
 		BarrierManager.init();
 
+		Identifier catacomb = Grimoires.id("catacomb");
+		DungeonRoomRegistry.register(catacomb, Grimoires.id("dungeon/0/starting_room"), CatacombStartingRoom::new);
+		DungeonRoomRegistry.register(catacomb, Grimoires.id("dungeon/0/combat_room_1"), CatacombCombatRoom::new);
+
 		CommandRegistrationCallback.EVENT.register(((dispatcher, buildContext, environment) -> {
 			GrimoiresCommand.register(dispatcher);
 		}));
+		ServerLifecycleEvents.SERVER_STARTED.register(DungeonManager::loadAll);
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> DungeonManager.clear());
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (!(entity instanceof PlayerEntity player) || DAMAGING.get()) {
 				return true;
@@ -89,7 +101,6 @@ public class Grimoires implements ModInitializer {
 			MagicComponent magic = MagicComponent.MAGIC.get(player);
 			if (MajaciteCrownItem.hasMajaciteCrownEquipped(player)) magic.growMaxManaFromMajacite();
 			ItemStack stack = player.getMainHandStack();
-			if (FIX_SHOULD_SPEND_MANA && !magic.shouldSpendMana()) magic.setShouldSpendMana(true);
 			float magicRegenMult = 1.0f;
 			if (stack.isOf(GrimoiresItems.STAFF_ITEM)) {
 				Optional<StaffPart> partOpt = GrimoiresStaffParts.get(StaffItem.getPart(stack, "shaft"));
@@ -100,6 +111,7 @@ public class Grimoires implements ModInitializer {
 			magic.setMana(magic.getMana() + 0.05f * magicRegenMult);
 			MagicComponent.MAGIC.sync(player);
 		}));
+		ServerWorldTickEvents.END.register((server, world) -> DungeonManager.tick(world));
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			if (alive) return; // returning from the End, not a death
 			if (oldPlayer.world.getRegistryKey() != VOID_DIMENSION) return;

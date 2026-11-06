@@ -1,5 +1,6 @@
 package io.github.theonilsson.grimoires.spell;
 
+import io.github.theonilsson.grimoires.Grimoires;
 import io.github.theonilsson.grimoires.component.MagicComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +16,8 @@ public final class SpellCaster {
 		if (a == null) return Integer.MAX_VALUE;
 		float suppression = MagicSuppression.of(player);
 		if (suppression <= 0f) return Integer.MAX_VALUE;
-		float ticks = a.castTicks(spell) / staff.castSpeed() / suppression;
+		double castSpeed = player.getAttributeValue(Grimoires.CASTING_SPEED);
+		float ticks = a.castTicks(spell) / staff.castSpeed() / (float) castSpeed / suppression;
 		return ticks >= Integer.MAX_VALUE ? Integer.MAX_VALUE : Math.max(1, Math.round(ticks));
 	}
 

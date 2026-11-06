@@ -82,7 +82,7 @@ public class StaffItem extends Item {
 		if (!(user instanceof ServerPlayerEntity player)) return;
 
 		if (MajaciteCrownItem.hasMajaciteCrownEquipped(player)) {
-			player.sendMessage(Text.translatable("cast.grimoires.error_majacite"), true);
+			player.sendMessage(Text.translatable("cast.grimoires.error_majacite").formatted(Formatting.RED), true);
 			return;
 		}
 

@@ -6,6 +6,7 @@ import io.github.theonilsson.grimoires.client.renderer.StaffModel;
 import io.github.theonilsson.grimoires.client.renderer.StaffRenderer;
 import io.github.theonilsson.grimoires.init.GrimoiresItems;
 import io.github.theonilsson.grimoires.networking.OpenScreenS2CPacket;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.util.Identifier;
 import org.quiltmc.loader.api.ModContainer;
@@ -16,6 +17,7 @@ public class GrimoiresClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		BuiltinItemRendererRegistry.INSTANCE.register(GrimoiresItems.STAFF_ITEM, new StaffRenderer());
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(resourceManager -> new MimicModelProvider());
 
 		StaffModels.register(Grimoires.id("wood"), new StaffModel("wood_staff", "shaft", Grimoires.id("geo/wood_staff.geo.json"), new Identifier("textures/block/stripped_spruce_log.png"), null, StaffModel.NO_TINT));
 		StaffModels.register(Grimoires.id("metal_ring"), new StaffModel("metal_ring", "ornament", Grimoires.id("geo/metal_ring.geo.json"), Grimoires.id("textures/ornament/metal_ring.png"), "ornament", StaffModel.NO_TINT));
